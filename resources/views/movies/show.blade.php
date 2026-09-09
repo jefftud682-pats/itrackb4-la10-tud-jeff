@@ -1,23 +1,25 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Movie Details</title>
-</head>
-<body>
+@extends('layouts.app')
 
-    <h1>{{ $item['title'] }}</h1>
+@section('title', $item['title'])
 
-    <p><strong>ID:</strong> {{ $item['id'] }}</p>
-    <p><strong>Title:</strong> {{ $item['title'] }}</p>
-    <p><strong>Director:</strong> {{ $item['director'] }}</p>
-    <p><strong>Genre:</strong> {{ $item['genre'] }}</p>
-    <p><strong>Year:</strong> {{ $item['year'] }}</p>
+@section('content')
 
-    <p>Created by: Jeff Tud</p>
+    <h2>{{ $item['title'] }}</h2>
 
-    <a href="{{ route('movies.index') }}">
-        Back to Movie List
-    </a>
+    <div class="card">
+        <div class="card-body">
 
-</body>
-</html>
+            <p><strong>ID:</strong> {{ $item['id'] }}</p>
+            <p><strong>Title:</strong> {{ $item['title'] }}</p>
+            <p><strong>Director:</strong> {{ $item['director'] }}</p>
+            <p><strong>Genre:</strong> {{ $item['genre'] }}</p>
+            <p><strong>Year:</strong> {{ $item['year'] }}</p>
+
+            <a class="btn btn-primary" href="{{ route('movies.index') }}">
+                Back to Movie List
+            </a>
+
+        </div>
+    </div>
+
+@endsection

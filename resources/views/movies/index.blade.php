@@ -1,28 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Movie List</title>
-</head>
-<body>
+@extends('layouts.app')
 
-    <h1>My Movie Collection</h1>
+@section('title', 'Movie List')
 
-    <p>Created by: Jeff Tud</p>
+@section('content')
 
-    <p>
-        <a href="{{ route('movies.featured') }}">
-            View Featured Movie
-        </a>
-    </p>
+    <h2>Movie List</h2>
 
-    <p>
-        <a href="{{ route('movies.filter') }}">
-            View All Movies
-        </a>
-    </p>
-
-    <table border="1" cellpadding="10">
+    <table class="table table-striped table-bordered">
         <tr>
+            <th>No.</th>
             <th>ID</th>
             <th>Title</th>
             <th>Director</th>
@@ -30,8 +16,10 @@
             <th>Year</th>
         </tr>
 
-        @foreach ($movies as $item)
+        @forelse ($movies as $item)
             <tr>
+                <td>{{ $loop->iteration }}</td>
+
                 <td>{{ $item['id'] }}</td>
 
                 <td>
@@ -41,12 +29,25 @@
                 </td>
 
                 <td>{{ $item['director'] }}</td>
+
                 <td>{{ $item['genre'] }}</td>
-                <td>{{ $item['year'] }}</td>
+
+                <td>
+                    {{ $item['year'] }}
+
+                    @if ($item['year'] == 2019)
+                        <span class="badge bg-primary">Featured</span>
+                    @endif
+                </td>
             </tr>
-        @endforeach
+        @empty
+            <tr>
+                <td colspan="6">
+                    No movies are available in the collection.
+                </td>
+            </tr>
+        @endforelse
 
     </table>
 
-</body>
-</html>
+@endsection
