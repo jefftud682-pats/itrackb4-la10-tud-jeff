@@ -2,69 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+
 class MovieController extends Controller
 {
-    public function index()
-    {
-        $movies = $this->movies();
-
-        return view('movies.index', [
-            'movies' => $movies
-        ]);
-    }
-
-    public function show($id)
-    {
-        $movies = $this->movies();
-
-        if (!isset($movies[$id])) {
-            abort(404);
-        }
-
-        $item = $movies[$id];
-
-        return view('movies.show', [
-            'item' => $item
-        ]);
-    }
-
-    public function featured()
-    {
-        $movies = $this->movies();
-
-        $item = $movies[3];
-
-        return view('movies.featured', [
-            'item' => $item
-        ]);
-    }
-
-    public function filter($value = null)
-    {
-        $movies = $this->movies();
-
-        if ($value === null) {
-            return view('movies.filter', [
-                'movies' => $movies,
-                'activeFilter' => 'All'
-            ]);
-        }
-
-        $filtered = [];
-
-        foreach ($movies as $item) {
-            if ($item['genre'] === $value) {
-                $filtered[] = $item;
-            }
-        }
-
-        return view('movies.filter', [
-            'movies' => $filtered,
-            'activeFilter' => $value
-        ]);
-    }
-
-    private function movies()
+     private function movies()
     {
         return [
             1 => [
@@ -110,5 +52,72 @@ class MovieController extends Controller
                 'year' => 2013,
             ],
         ];
+    }
+
+    public function index()
+    {
+         $movies = $this->movies();
+
+        return view('movies.index' , [
+            'movies' => $movies
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+         $movies = $this->movies();
+
+        if (!isset($movies[$id])) {
+            abort(404);
+        }
+
+        $item = $movies[$id];
+
+        return view('movies.show', [
+            'item' => $item
+        ]);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
     }
 }
