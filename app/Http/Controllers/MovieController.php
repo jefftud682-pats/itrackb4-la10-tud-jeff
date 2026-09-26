@@ -6,7 +6,32 @@ use Illuminate\Http\Request;
 
 class MovieController extends Controller
 {
-     private function movies()
+    public function index(Request $request)
+    {
+        $movies = $this->movies();
+
+        $genre = $request->query('genre', 'all');
+        $director = $request->query('director', 'all');
+
+        $filtered = [];
+
+        foreach ($movies as $item) {
+            $genreMatch = $genre === 'all' || $item['genre'] === $genre;
+            $directorMatch = $director === 'all' || $item['director'] === $director;
+
+            if ($genreMatch && $directorMatch) {
+                $filtered[] = $item;
+            }
+        }
+
+        return view('movies.index', [
+            'movies' => $filtered,
+            'genre' => $genre,
+            'director' => $director
+        ]);
+    }
+
+    private function movies()
     {
         return [
             1 => [
@@ -54,37 +79,19 @@ class MovieController extends Controller
         ];
     }
 
-    public function index()
-    {
-         $movies = $this->movies();
-
-        return view('movies.index' , [
-            'movies' => $movies
-        ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-         $movies = $this->movies();
+        $movies = $this->movies();
 
         if (!isset($movies[$id])) {
             abort(404);
@@ -97,25 +104,16 @@ class MovieController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //

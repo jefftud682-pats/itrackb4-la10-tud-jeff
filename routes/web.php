@@ -10,9 +10,15 @@ Route::get('/', function () {
 Route::get('/moviess/featured', [ MovieController::class, 'featured'])
     ->name('movies.featured');
 
-Route::get('/moviess/filter/{value?}', [MovieController::class, 'filter'])
-    ->name('movies.filter');
+Route::get('/moviess/filter/{value?}', function ($value = null) {
+    if ($value) {
+        return redirect()->route('movies.index', [
+            'genre' => $value
+        ]);
+    }
+
+    return redirect()->route('movies.index');
+})->name('movies.filter');
 
 Route::resource('movies', MovieController::class)
     ->only(['index', 'show']);
-
