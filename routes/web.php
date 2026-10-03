@@ -7,10 +7,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/moviess/featured', [ MovieController::class, 'featured'])
+Route::get('/movies/featured', [ MovieController::class, 'featured'])
     ->name('movies.featured');
 
-Route::get('/moviess/filter/{value?}', function ($value = null) {
+Route::get('/movies/filter/{value?}', function ($value = null) {
     if ($value) {
         return redirect()->route('movies.index', [
             'genre' => $value
@@ -21,4 +21,4 @@ Route::get('/moviess/filter/{value?}', function ($value = null) {
 })->name('movies.filter');
 
 Route::resource('movies', MovieController::class)
-    ->only(['index', 'show']);
+    ->only(['index', 'create', 'store', 'show']);

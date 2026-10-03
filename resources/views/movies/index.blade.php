@@ -7,6 +7,12 @@
     <h2>Movie List</h2>
 
     <p>
+        <a href="{{ route('movies.create') }}" class="btn btn-primary">
+            Add Movie
+        </a>
+    </p>
+
+    <p>
         <strong>Genre:</strong> {{ $genre }}
         |
         <strong>Director:</strong> {{ $director }}
