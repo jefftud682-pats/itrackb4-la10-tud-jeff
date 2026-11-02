@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @section('title', 'Add Movie')
@@ -41,16 +42,18 @@
         </div>
 
         <div class="mb-3">
-            <label for="genre">Genre</label>
+            <label for="genre_id">Genre</label>
 
-            <select name="genre" id="genre" class="form-control">
+            <select name="genre_id" id="genre_id" class="form-control">
                 <option value="">Select Genre</option>
-                @foreach ($genres as $name)
-                    <option value="{{ $name }}" @selected(old('genre') === $name)>{{ $name }}</option>
+                @foreach ($genres as $itemGenre)
+                    <option value="{{ $itemGenre->id }}" @selected(old('genre_id') == $itemGenre->id)>
+                        {{ $itemGenre->name }}
+                    </option>
                 @endforeach
             </select>
 
-            @error('genre')
+            @error('genre_id')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>

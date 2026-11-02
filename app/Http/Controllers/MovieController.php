@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Movie;
+use App\Models\Genre;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MovieController extends Controller
 {
@@ -14,36 +16,52 @@ class MovieController extends Controller
         'Erik Matti',
     ];
 
-    private array $genres = ['Romance', 'Family', 'Historical', 'Crime'];
-
     public function index(Request $request)
     {
-        $movies = Movie::all();
+        DB::enableQueryLog();
 
         $genre = $request->query('genre', 'all');
         $director = $request->query('director', 'all');
 
-        return view('movies.index', compact('movies', 'genre', 'director'));
+        $query = Movie::with('genre');
+
+        if ($genre !== 'all') {
+            $query->where('genre_id', $genre);
+        }
+
+        if ($director !== 'all') {
+            $query->where('director', $director);
+        }
+
+        $movies = $query->get();
+        $genres = Genre::all();
+
+        return view('movies.index', compact(
+            'movies',
+            'genres',
+            'genre',
+            'director'
+        ));
     }
 
     public function create()
     {
         return view('movies.create', [
             'directors' => $this->directors,
-            'genres' => $this->genres,
+            'genres' => Genre::all(),
         ]);
     }
 
     public function store(Request $request)
     {
-        $data = $request->validate([
+        $validated = $request->validate([
             'title' => 'required|max:255',
             'director' => 'required|in:' . implode(',', $this->directors),
-            'genre' => 'required|in:' . implode(',', $this->genres),
-            'year' => 'required|numeric|min:1900|max:2026'
+            'genre_id' => 'required|exists:genres,id',
+            'year' => 'required|numeric|min:1900|max:2026',
         ]);
 
-        Movie::create($data);
+        Movie::create($validated);
 
         return redirect()->route('movies.index')
             ->with('success', 'Movie added successfully.');

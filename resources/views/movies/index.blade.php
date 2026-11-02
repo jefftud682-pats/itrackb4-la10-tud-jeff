@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @section('title', 'Movie List')
@@ -13,44 +14,56 @@
     </p>
 
     <p>
-        <strong>Genre:</strong> {{ $genre }}
+        <strong>Genre:</strong>
+        {{ $genre === 'all' ? 'All Genres' : ($genres->firstWhere('id', $genre)?->name ?? 'Unknown') }}
         |
         <strong>Director:</strong> {{ $director }}
     </p>
 
     <h5>Filter by Genre</h5>
 
-    @if ($director === 'all')
-        <a href="{{ route('movies.index') }}">All Genres</a>
-        <a href="{{ route('movies.index', ['genre'=>'Romance']) }}">Romance</a>
-        <a href="{{ route('movies.index', ['genre'=>'Family']) }}">Family</a>
-        <a href="{{ route('movies.index', ['genre'=>'Historical']) }}">Historical</a>
-        <a href="{{ route('movies.index', ['genre'=>'Crime']) }}">Crime</a>
-    @else
-        <a href="{{ route('movies.index', ['director'=>$director]) }}">All Genres</a>
-        <a href="{{ route('movies.index', ['genre'=>'Romance','director'=>$director]) }}">Romance</a>
-        <a href="{{ route('movies.index', ['genre'=>'Family','director'=>$director]) }}">Family</a>
-        <a href="{{ route('movies.index', ['genre'=>'Historical','director'=>$director]) }}">Historical</a>
-        <a href="{{ route('movies.index', ['genre'=>'Crime','director'=>$director]) }}">Crime</a>
-    @endif
+    @foreach ($genres as $itemGenre)
+        <a href="{{ route('movies.index', array_filter([
+            'genre' => $itemGenre->id,
+            'director' => $director !== 'all' ? $director : null,
+        ])) }}">
+            {{ $itemGenre->name }}
+        </a>
+    @endforeach
+
+    <a href="{{ route('movies.index', array_filter([
+        'director' => $director !== 'all' ? $director : null,
+    ])) }}">
+        All Genres
+    </a>
 
     <br><br>
 
     <h5>Filter by Director</h5>
 
-    @if ($genre === 'all')
-        <a href="{{ route('movies.index') }}">All Directors</a>
-        <a href="{{ route('movies.index', ['director'=>'Cathy Garcia-Sampana']) }}">Cathy Garcia-Sampana</a>
-        <a href="{{ route('movies.index', ['director'=>'Antoinette Jadaone']) }}">Antoinette Jadaone</a>
-        <a href="{{ route('movies.index', ['director'=>'Jerrold Tarog']) }}">Jerrold Tarog</a>
-        <a href="{{ route('movies.index', ['director'=>'Erik Matti']) }}">Erik Matti</a>
-    @else
-        <a href="{{ route('movies.index', ['genre'=>$genre]) }}">All Directors</a>
-        <a href="{{ route('movies.index', ['genre'=>$genre,'director'=>'Cathy Garcia-Sampana']) }}">Cathy Garcia-Sampana</a>
-        <a href="{{ route('movies.index', ['genre'=>$genre,'director'=>'Antoinette Jadaone']) }}">Antoinette Jadaone</a>
-        <a href="{{ route('movies.index', ['genre'=>$genre,'director'=>'Jerrold Tarog']) }}">Jerrold Tarog</a>
-        <a href="{{ route('movies.index', ['genre'=>$genre,'director'=>'Erik Matti']) }}">Erik Matti</a>
-    @endif
+    @php
+        $directors = [
+            'Cathy Garcia-Sampana',
+            'Antoinette Jadaone',
+            'Jerrold Tarog',
+            'Erik Matti',
+        ];
+    @endphp
+
+    <a href="{{ route('movies.index', array_filter([
+        'genre' => $genre !== 'all' ? $genre : null,
+    ])) }}">
+        All Directors
+    </a>
+
+    @foreach ($directors as $itemDirector)
+        <a href="{{ route('movies.index', array_filter([
+            'genre' => $genre !== 'all' ? $genre : null,
+            'director' => $itemDirector,
+        ])) }}">
+            {{ $itemDirector }}
+        </a>
+    @endforeach
 
     <p>
         <a href="{{ route('movies.index') }}">
@@ -71,7 +84,6 @@
         @forelse ($movies as $item)
             <tr>
                 <td>{{ $loop->iteration }}</td>
-
                 <td>{{ $item['id'] }}</td>
 
                 <td>
@@ -81,8 +93,7 @@
                 </td>
 
                 <td>{{ $item['director'] }}</td>
-
-                <td>{{ $item['genre'] }}</td>
+                <td>{{ $item->genre->name }}</td>
 
                 <td>
                     {{ $item['year'] }}
@@ -101,5 +112,7 @@
         @endforelse
 
     </table>
+
+    <p>Queries: {{ count(\Illuminate\Support\Facades\DB::getQueryLog()) }}</p>
 
 @endsection
